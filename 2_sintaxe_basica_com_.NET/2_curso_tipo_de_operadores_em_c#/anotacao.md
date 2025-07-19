@@ -1,0 +1,2 @@
+# Operador de Atribuição
+* O operador de atribuição = atribui o valor do operando do lado direito a uma variável, uma = ou um elemento __indexador__ fornecido pelo operando do lado esquerdo. O resuldato de uma expressão de atribuição é o valor atribuído a um oprando do lado esquerdo. O tipo do operandos do lado direito deve ser do mesmo tipo ou implicitamente conversível para o operando do lado esquerdo.

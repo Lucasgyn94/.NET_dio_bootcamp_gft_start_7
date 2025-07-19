@@ -8,11 +8,10 @@ namespace ExemploSintaxeIdentacao
         public static void Main(string[] args)
         {
 
-            Pessoa pessoa = new Pessoa();
-            pessoa.Nome = "Lucas";
-            pessoa.Idade = 30;
-            pessoa.Apresentar();
-
+            Pessoa p1 = new Pessoa();
+            p1.Nome = "Lucas";
+            p1.Idade = 30;
+            p1.Apresentar();    
         
         }
     }
