@@ -1,3 +1,6 @@
 [submodule "2_sintaxe_basica_com_.NET/7_desafio_de_projeto_construindo_um_sistema_para_um_estacionamento_com_c#/trilha-net-fundamentos-desafio"]
 	path = "2_sintaxe_basica_com_.NET/7_desafio_de_projeto_construindo_um_sistema_para_um_estacionamento_com_c#/trilha-net-fundamentos-desafio"
 	url = https://github.com/Lucasgyn94/trilha-net-fundamentos-desafio.git
+[submodule "1_principios_de_desenvolvimento_de_aplicacoes/4_desafio_de_projeto_contribuindo_em_um_projeto_open_source_no_github/dio-lab-open-source"]
+	path = 1_principios_de_desenvolvimento_de_aplicacoes/4_desafio_de_projeto_contribuindo_em_um_projeto_open_source_no_github/dio-lab-open-source
+	url = https://github.com/Lucasgyn94/dio-lab-open-source.git
