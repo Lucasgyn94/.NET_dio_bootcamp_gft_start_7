@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "ExemploPercorrendoUmArrayComForeach/1.0.0": {
+        "runtime": {
+          "ExemploPercorrendoUmArrayComForeach.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ExemploPercorrendoUmArrayComForeach/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

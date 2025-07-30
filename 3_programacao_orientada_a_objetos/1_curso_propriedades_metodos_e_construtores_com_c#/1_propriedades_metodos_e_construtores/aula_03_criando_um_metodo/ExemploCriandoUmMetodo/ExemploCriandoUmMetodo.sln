@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExemploCriandoUmMetodo", "ExemploCriandoUmMetodo.csproj", "{0EB7308C-223D-1968-AFF3-F1844C22C93D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0EB7308C-223D-1968-AFF3-F1844C22C93D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EB7308C-223D-1968-AFF3-F1844C22C93D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EB7308C-223D-1968-AFF3-F1844C22C93D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EB7308C-223D-1968-AFF3-F1844C22C93D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B815F1C5-DB36-4ED5-BA20-D1700E99247E}
+	EndGlobalSection
+EndGlobal

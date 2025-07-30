@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExemploImplementandoUmArrayDeInteiros", "ExemploImplementandoUmArrayDeInteiros.csproj", "{08019C80-2485-6551-F5E6-8B84DF1E27FA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{08019C80-2485-6551-F5E6-8B84DF1E27FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08019C80-2485-6551-F5E6-8B84DF1E27FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08019C80-2485-6551-F5E6-8B84DF1E27FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08019C80-2485-6551-F5E6-8B84DF1E27FA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {53001338-8363-4394-951C-8A2F505678E5}
+	EndGlobalSection
+EndGlobal

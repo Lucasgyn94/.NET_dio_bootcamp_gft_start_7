@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "aula_02_implementando_um_array_de_inteiros", "aula_02_implementando_um_array_de_inteiros", "{72FC9BC8-2E06-78E0-7AAD-697E75AB9CE8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExemploImplementandoUmArrayDeInteiros", "aula_02_implementando_um_array_de_inteiros\ExemploImplementandoUmArrayDeInteiros\ExemploImplementandoUmArrayDeInteiros.csproj", "{453812DF-1F47-B9DC-403C-6AEC9E2852AD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{453812DF-1F47-B9DC-403C-6AEC9E2852AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{453812DF-1F47-B9DC-403C-6AEC9E2852AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{453812DF-1F47-B9DC-403C-6AEC9E2852AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{453812DF-1F47-B9DC-403C-6AEC9E2852AD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{453812DF-1F47-B9DC-403C-6AEC9E2852AD} = {72FC9BC8-2E06-78E0-7AAD-697E75AB9CE8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {962FBF0E-5CE0-46C6-AF06-F62A5B0EEBFB}
+	EndGlobalSection
+EndGlobal
