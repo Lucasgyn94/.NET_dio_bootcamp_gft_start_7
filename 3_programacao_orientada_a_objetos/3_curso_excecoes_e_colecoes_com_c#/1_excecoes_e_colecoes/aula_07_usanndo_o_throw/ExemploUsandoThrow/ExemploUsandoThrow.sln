@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExemploUsandoThrow", "ExemploUsandoThrow.csproj", "{8BDCC43E-9CCA-8F89-88B2-4EAE80AC4478}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8BDCC43E-9CCA-8F89-88B2-4EAE80AC4478}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BDCC43E-9CCA-8F89-88B2-4EAE80AC4478}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BDCC43E-9CCA-8F89-88B2-4EAE80AC4478}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BDCC43E-9CCA-8F89-88B2-4EAE80AC4478}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F20BF7FD-A2D6-4335-A7B2-B7EC77A91F24}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "ExemploPilhaNaPratica/1.0.0": {
+        "runtime": {
+          "ExemploPilhaNaPratica.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ExemploPilhaNaPratica/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

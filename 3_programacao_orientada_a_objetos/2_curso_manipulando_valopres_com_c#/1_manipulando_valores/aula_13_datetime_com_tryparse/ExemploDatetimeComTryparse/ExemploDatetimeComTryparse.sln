@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExemploDatetimeComTryparse", "ExemploDatetimeComTryparse.csproj", "{E8F8F61E-C2AB-9B82-046C-E0642A682373}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E8F8F61E-C2AB-9B82-046C-E0642A682373}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8F8F61E-C2AB-9B82-046C-E0642A682373}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8F8F61E-C2AB-9B82-046C-E0642A682373}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8F8F61E-C2AB-9B82-046C-E0642A682373}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5CA3BE11-5B6A-4F29-AE10-7A1E903AC868}
+	EndGlobalSection
+EndGlobal

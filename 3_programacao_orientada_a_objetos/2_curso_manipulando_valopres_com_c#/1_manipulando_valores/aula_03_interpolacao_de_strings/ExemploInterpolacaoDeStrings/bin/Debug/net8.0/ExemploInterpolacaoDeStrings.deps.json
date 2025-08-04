@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "ExemploInterpolacaoDeStrings/1.0.0": {
+        "runtime": {
+          "ExemploInterpolacaoDeStrings.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ExemploInterpolacaoDeStrings/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
