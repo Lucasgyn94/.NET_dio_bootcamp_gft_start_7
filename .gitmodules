@@ -4,3 +4,6 @@
 [submodule "1_principios_de_desenvolvimento_de_aplicacoes/4_desafio_de_projeto_contribuindo_em_um_projeto_open_source_no_github/dio-lab-open-source"]
 	path = 1_principios_de_desenvolvimento_de_aplicacoes/4_desafio_de_projeto_contribuindo_em_um_projeto_open_source_no_github/dio-lab-open-source
 	url = https://github.com/Lucasgyn94/dio-lab-open-source.git
+[submodule "3_programacao_orientada_a_objetos/6_desafio_de_projeto_construindo_um_sistema_de_hospedagem_de_um_hotel_com_c#/SistemaHospedagem"]
+	path = "3_programacao_orientada_a_objetos/6_desafio_de_projeto_construindo_um_sistema_de_hospedagem_de_um_hotel_com_c#/SistemaHospedagem"
+	url = https://github.com/Lucasgyn94/trilha-net-explorando-desafio.git
