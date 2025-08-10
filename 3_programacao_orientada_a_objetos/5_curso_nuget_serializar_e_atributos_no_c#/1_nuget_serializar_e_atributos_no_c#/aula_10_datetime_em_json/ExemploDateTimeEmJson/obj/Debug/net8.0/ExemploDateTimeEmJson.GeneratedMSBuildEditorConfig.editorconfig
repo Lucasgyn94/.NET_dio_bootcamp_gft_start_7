@@ -1,0 +1,13 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = ExemploDateTimeEmJson
+build_property.ProjectDir = /home/lucas/Area de Trabalho/DigitalOne/17_bootcamp_gft_start_7_.net/3_programacao_orientada_a_objetos/5_curso_nuget_serializar_e_atributos_no_c#/1_nuget_serializar_e_atributos_no_c#/aula_10_datetime_em_json/ExemploDateTimeEmJson/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 

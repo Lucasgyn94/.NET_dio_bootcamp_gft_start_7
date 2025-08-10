@@ -1,0 +1,14 @@
+[
+  {
+    "Id": 1,
+    "Nome_Produto": "Borracha",
+    "Preco": 1.90,
+    "DataHoraVenda": "2025-08-09T00:00:00"
+  },
+  {
+    "Id": 2,
+    "Nome_Produto": "Caneta",
+    "Preco": 2.89,
+    "DataHoraVenda": "2025-08-09T19:58:00"
+  }
+]

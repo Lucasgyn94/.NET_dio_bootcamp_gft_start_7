@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "V/GcVsyccA0=",
+  "success": true,
+  "projectFilePath": "/home/lucas/Area de Trabalho/DigitalOne/17_bootcamp_gft_start_7_.net/3_programacao_orientada_a_objetos/5_curso_nuget_serializar_e_atributos_no_c#/1_nuget_serializar_e_atributos_no_c#/aula_07_escrevendo_um_arquivo_json/ExemploEscrevendoUmArquivoJson/ExemploEscrevendoUmArquivoJson.csproj",
+  "expectedPackageFiles": [
+    "/home/lucas/.nuget/packages/newtonsoft.json/13.0.4-beta1/newtonsoft.json.13.0.4-beta1.nupkg.sha512"
+  ],
+  "logs": []
+}
