@@ -7,3 +7,6 @@
 [submodule "3_programacao_orientada_a_objetos/6_desafio_de_projeto_construindo_um_sistema_de_hospedagem_de_um_hotel_com_c#/SistemaHospedagem"]
 	path = "3_programacao_orientada_a_objetos/6_desafio_de_projeto_construindo_um_sistema_de_hospedagem_de_um_hotel_com_c#/SistemaHospedagem"
 	url = https://github.com/Lucasgyn94/trilha-net-explorando-desafio.git
+[submodule "3_programacao_orientada_a_objetos/10_desafio_de_projeto_criando_um_sistema_e_abstraindo_um_celular_com_poo_em_c#/SistemaAbstraindoUmCelularPOO"]
+	path = "3_programacao_orientada_a_objetos/10_desafio_de_projeto_criando_um_sistema_e_abstraindo_um_celular_com_poo_em_c#/SistemaAbstraindoUmCelularPOO"
+	url = https://github.com/Lucasgyn94/trilha-net-poo-desafio.git

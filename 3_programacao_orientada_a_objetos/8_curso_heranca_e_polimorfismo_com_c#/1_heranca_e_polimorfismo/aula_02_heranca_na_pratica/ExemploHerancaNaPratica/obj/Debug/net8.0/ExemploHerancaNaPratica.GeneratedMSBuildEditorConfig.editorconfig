@@ -1,0 +1,13 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = ExemploHerancaNaPratica
+build_property.ProjectDir = /home/lucas/Area de Trabalho/DigitalOne/17_bootcamp_gft_start_7_.net/3_programacao_orientada_a_objetos/8_curso_heranca_e_polimorfismo_com_c#/1_heranca_e_polimorfismo/aula_02_heranca_na_pratica/ExemploHerancaNaPratica/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
