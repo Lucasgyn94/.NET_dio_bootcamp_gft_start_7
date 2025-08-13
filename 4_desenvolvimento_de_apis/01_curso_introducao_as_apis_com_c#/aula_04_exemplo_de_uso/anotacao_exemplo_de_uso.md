@@ -1,0 +1,1 @@
+* Uma api pode ser externa (aberta para que todos possam acessa-lá) ou interna (apenas os membros da empresa a que está vinculada a API pode acessa-lá)

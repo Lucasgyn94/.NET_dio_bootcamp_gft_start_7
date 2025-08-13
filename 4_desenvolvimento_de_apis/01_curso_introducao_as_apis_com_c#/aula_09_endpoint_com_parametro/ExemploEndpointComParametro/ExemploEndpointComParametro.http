@@ -1,0 +1,6 @@
+@ExemploEndpointComParametro_HostAddress = http://localhost:5228
+
+GET {{ExemploEndpointComParametro_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

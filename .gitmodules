@@ -10,3 +10,6 @@
 [submodule "3_programacao_orientada_a_objetos/10_desafio_de_projeto_criando_um_sistema_e_abstraindo_um_celular_com_poo_em_c#/SistemaAbstraindoUmCelularPOO"]
 	path = "3_programacao_orientada_a_objetos/10_desafio_de_projeto_criando_um_sistema_e_abstraindo_um_celular_com_poo_em_c#/SistemaAbstraindoUmCelularPOO"
 	url = https://github.com/Lucasgyn94/trilha-net-poo-desafio.git
+[submodule "4_desenvolvimento_de_apis/02_desafio_de_projeto_trabalhando_com_asp_net_minimals_apis/MinimalApi"]
+	path = 4_desenvolvimento_de_apis/02_desafio_de_projeto_trabalhando_com_asp_net_minimals_apis/MinimalApi
+	url = https://github.com/Lucasgyn94/minimal-api.git
