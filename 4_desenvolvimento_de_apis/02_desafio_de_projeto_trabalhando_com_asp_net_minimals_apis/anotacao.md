@@ -58,3 +58,10 @@ dotnet ef database update
 
 * Foi adicionado ao projeto a biblioteca "Swashbuckle.AspNetCore 8.1.4
 " do swagger também encontrada no nuger.org
+
+## Adicionando Token JWT
+* Para configurarmos token jwt em nosso projeto, o primeiro passo é instalar o pacote __Microsoft.AspNetCore.Authentication.JwtBearer__
+, presente no link:
+```
+dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 8.0.19
+```
