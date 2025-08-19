@@ -470,6 +470,820 @@ dotnet test --filter "FullyQualifiedName~VeiculoServicoTest"
 
 
 ## Criando Testes Com Request
+* Agora iremos aprender a criar testes de request, que são testes que vai levantar a nossa API, e testes end-to-end, enviando os dados via POST, GET, etc.
+* Para isso, o primeiro passo e refatorar o nosso código da API, vamos criar um arquivo em branco e copiar todo o código de __Program.cs__, deixando o nosso __Program.cs__ da seguinte forma:
+
+-> __Program.cs antes:__
+```
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MinimalApi;
+using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authorization;
+
+Env.Load(); // carregando arquivo .env com as credenciais do banco de dados
+
+#region Builder
+var builder = WebApplication.CreateBuilder(args);
+
+//var key = builder.Configuration.GetSection("Jwt").ToString();
+var key = builder.Configuration["Jwt"];
+
+if (string.IsNullOrEmpty(key)) key = "123456";
+
+// Adicionando configuração do token jwt ao projeto
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(option =>
+{
+    option.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateLifetime = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
+
+builder.Services.AddAuthorization();
+
+// injetando serviço AdministradorServico
+builder.Services.AddScoped<IAdministradorServico, AdministradorServico>();
+// injetando serviço de veículos
+builder.Services.AddScoped<IVeiculoServico, VeiculoServico>();
+
+// configuração do swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Insira o seu token aqui: "
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme{
+                Reference = new OpenApiReference{
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
+
+// acrescentando serviço do mysql
+var dbServer = Environment.GetEnvironmentVariable("DB_SERVER");
+var dbDatabase = Environment.GetEnvironmentVariable("DB_DATABASE");
+var dbUser = Environment.GetEnvironmentVariable("DB_USER");
+var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
+
+var stringConexaoDB = $"Server={dbServer};Database={dbDatabase};Uid={dbUser};Pwd={dbPassword};";
+
+builder.Services.AddDbContext<DbContexto>(options =>
+{
+    options.UseMySql(
+        stringConexaoDB,
+        ServerVersion.AutoDetect(stringConexaoDB)
+    );
+});
+
+/* 
+builder.Services.AddDbContext<DbContexto>(options =>
+{
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("mysql"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mysql"))
+    );
+});
+*/
+
+var app = builder.Build();
+#endregion
+
+#region Home
+app.MapGet("/", () => Results.Json(new Home())).AllowAnonymous().WithTags("Home");
+#endregion
+
+#region Administradores
+string GerarToken(Administrador administrador)
+{
+    if (string.IsNullOrEmpty(key)) return string.Empty;
+
+    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+    var claims = new List<Claim>()
+    {
+        new Claim("Email", administrador.Email),
+        new Claim("Perfil", administrador.Perfil),
+        new Claim(ClaimTypes.Role, administrador.Perfil)
+    };
+
+    var token = new JwtSecurityToken(
+        claims: claims,
+        expires: DateTime.Now.AddDays(1),
+        signingCredentials: credentials
+    );
+
+    return new JwtSecurityTokenHandler().WriteToken(token);
+}
+
+app.MapPost("/administradores/login", ([FromBody] LoginDTO loginDTO, IAdministradorServico administradorServico) =>
+{
+    var adm = administradorServico.Login(loginDTO);
+
+    if (adm != null)
+    {
+        string token = GerarToken(adm);
+
+        return Results.Ok(new AdministradorLogado
+        {
+            Email = adm.Email,
+            Perfil = adm.Perfil,
+            Token = token
+        });
+    }
+    /* 
+    if (administradorServico.Login(loginDTO) != null)
+    {
+        return Results.Ok("Login com sucesso!");
+    }
+    */
+    else
+    {
+        return Results.Unauthorized();
+    }
+    // if (loginDTO.Email == "adm@teste.com" && loginDTO.Senha == "123456")
+    // {
+    //     return Results.Ok("Login com sucesso!");
+    // }
+    // else
+    // {
+    //     return Results.Unauthorized();
+    // }
+}).AllowAnonymous().WithTags("Administradores");
 
 
+app.MapGet("/administradores", ([FromQuery] int? pagina, IAdministradorServico administradorServico) =>
+{
+    var adms = new List<AdministradorModelView>();
+    var administradores = administradorServico.Todos(pagina);
 
+    foreach (var adm in administradores)
+    {
+
+        adms.Add(new AdministradorModelView
+        {
+            Id = adm.Id,
+            Email = adm.Email,
+            Perfil = adm.Perfil
+
+        });
+    }
+
+    return Results.Ok(adms);
+})
+.RequireAuthorization()
+.RequireAuthorization(new AuthorizeAttribute { Roles = "Adm" })
+.WithTags("Administradores");
+
+app.MapGet("/administradores/{id}", ([FromRoute] int id, IAdministradorServico administradorServico) =>
+{
+    var administrador = administradorServico.BuscarPorId(id);
+
+    if (administrador == null) return Results.NotFound();
+
+    return Results.Ok(new AdministradorModelView
+    {
+        Id = administrador.Id,
+        Email = administrador.Email,
+        Perfil = administrador.Perfil
+
+    });
+})
+.RequireAuthorization()
+.RequireAuthorization(new AuthorizeAttribute { Roles = "Adm" })
+.WithTags("Administradores");
+
+
+app.MapPost("/administradores", ([FromBody] AdministradorDTO administradorDTO, IAdministradorServico administradorServico) =>
+{
+    var validacao = new ErrosDeValidacao
+    {
+        Mensagens = new List<string>()
+    };
+
+    if (string.IsNullOrEmpty(administradorDTO.Email))
+        validacao.Mensagens.Add("Email não pode ser vazio!");
+    if (string.IsNullOrEmpty(administradorDTO.Senha))
+        validacao.Mensagens.Add("Senha não pode ser vazia!");
+    if (administradorDTO.Perfil == null)
+        validacao.Mensagens.Add("Perfil não pode ser vazio!");
+
+    if (validacao.Mensagens.Count > 0)
+        return Results.BadRequest(validacao);
+
+    var administrador = new Administrador
+    {
+        Email = administradorDTO.Email,
+        Senha = administradorDTO.Senha,
+        Perfil = administradorDTO.Perfil.ToString() ?? Perfil.Editor.ToString()
+    };
+
+    administradorServico.Incluir(administrador);
+
+    return Results.Created($"administrador/{administrador.Id}", new AdministradorModelView
+    {
+        Id = administrador.Id,
+        Email = administrador.Email,
+        Perfil = administrador.Perfil
+    });
+
+})
+.RequireAuthorization()
+.RequireAuthorization(new AuthorizeAttribute { Roles = "Adm" })
+.WithTags("Administradores");
+
+#endregion
+
+#region Veiculos
+// Método de validar dto veículos 
+ErrosDeValidacao ValidaDTO(VeiculoDTO veiculoDTO)
+{
+    ErrosDeValidacao validacao = new ErrosDeValidacao
+    {
+        Mensagens = new List<string>()
+    };
+
+    if (string.IsNullOrEmpty(veiculoDTO.Nome))
+        validacao.Mensagens.Add("Nome de veículo não pode ser em branco!");
+    if (string.IsNullOrEmpty(veiculoDTO.Marca))
+        validacao.Mensagens.Add("Marca de veículo não pode ser em branco!");
+    if (veiculoDTO.Ano < 1950)
+    {
+        validacao.Mensagens.Add("Ano inválido! Informe um ano de veículo igual ou superior a 1950.");
+    }
+    ;
+
+    return validacao;
+}
+
+app.MapPost("/veiculos", ([FromBody] VeiculoDTO veiculoDTO, IVeiculoServico veiculoServico) =>
+{
+    var validacao = ValidaDTO(veiculoDTO);
+
+    if (validacao.Mensagens.Count > 0)
+    {
+        return Results.BadRequest(validacao);
+    }
+
+    var veiculo = new Veiculo
+    {
+        Nome = veiculoDTO.Nome,
+        Marca = veiculoDTO.Marca,
+        Ano = veiculoDTO.Ano
+    };
+
+    veiculoServico.Incluir(veiculo);
+
+    return Results.Created($"/veiculo/{veiculo.Id}", veiculo);
+})
+.RequireAuthorization()
+.RequireAuthorization(new AuthorizeAttribute { Roles = "Adm,Editor", })
+.WithTags("Veiculos");
+
+app.MapGet("/veiculos", ([FromQuery] int? pagina, IVeiculoServico veiculoServico) =>
+{
+    var veiculos = veiculoServico.Todos(pagina);
+    return Results.Ok(veiculos);
+})
+.RequireAuthorization()
+.RequireAuthorization(new AuthorizeAttribute { Roles = "Adm,Editor", })
+.WithTags("Veiculos");
+
+app.MapGet("/veiculos/{id}", ([FromRoute] int id, IVeiculoServico veiculoServico) =>
+{
+    var veiculo = veiculoServico.BuscarPorId(id);
+
+    if (veiculo == null) return Results.NotFound();
+    return Results.Ok(veiculo);
+
+})
+.RequireAuthorization()
+.RequireAuthorization(new AuthorizeAttribute { Roles = "Adm,Editor", })
+.WithTags("Veiculos");
+
+app.MapPut("veiculos/{id}", ([FromRoute] int id, VeiculoDTO veiculoDTO, IVeiculoServico veiculoServico) =>
+{
+    var veiculo = veiculoServico.BuscarPorId(id);
+    if (veiculo == null) return Results.NotFound();
+
+    var validacao = ValidaDTO(veiculoDTO);
+    if (validacao.Mensagens.Count > 0)
+    {
+        Results.BadRequest(validacao);
+    }
+
+
+    veiculo.Nome = veiculoDTO.Nome;
+    veiculo.Marca = veiculoDTO.Marca;
+    veiculo.Ano = veiculoDTO.Ano;
+
+    veiculoServico.Atualizar(veiculo);
+
+    return Results.Ok(veiculo);
+}).RequireAuthorization()
+.RequireAuthorization(new AuthorizeAttribute { Roles = "Adm", })
+.WithTags("Veiculos");
+
+app.MapDelete("veiculos/{id}", ([FromRoute] int id, IVeiculoServico veiculoServico) =>
+{
+    var veiculo = veiculoServico.BuscarPorId(id);
+
+    if (veiculo == null) return Results.NotFound();
+
+    veiculoServico.Apagar(veiculo);
+
+    return Results.NoContent();
+})
+.RequireAuthorization()
+.RequireAuthorization(new AuthorizeAttribute { Roles = "Adm", })
+.WithTags("Veiculos");
+
+#endregion
+
+#region App
+// instanciando o swagger
+app.UseSwagger();
+app.UseSwaggerUI(); // instanciando a interface do swagger ui
+
+// Configurando para usar autenticação e autorização jwt
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.Run();
+#endregion
+
+/*PAREI NA AULA: Configurando JWT no projeto: 22 min*/
+
+```
+
+-> __Program.cs depois:__
+```
+using MinimalApi;
+
+IHostBuilder CreateHostBuilder(string[] args)
+{
+    return Host.CreateDefaultBuilder(args)
+        .ConfigureWebHostDefaults(webBuilder =>
+        {
+            webBuilder.UseStartup<Startup>();
+        });
+}
+
+CreateHostBuilder(args).Build();
+```
+
+após isso, na raiz do projeto, criaremos um arquivo __Startup.cs__, aonde iremos fazer as nossas configurações. O Mesmo fica configurado da seguinte forma:
+
+-> __Startup.cs configurado:__
+```
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+
+namespace MinimalApi;
+
+public class Startup
+{
+
+    private string _key;
+    public Startup(IConfiguration configuration)
+    {
+        Env.Load(); // carregando arquivo .env com as credenciais do banco de dados
+        Configuration = configuration;
+        this._key = Configuration["Jwt"]?? "";
+
+        if (string.IsNullOrEmpty(this._key))
+            throw new InvalidOperationException("A chave JWT não foi encontrada nas configurações.");
+    
+    }
+
+    public IConfiguration Configuration { get; set; } = default!;
+
+    // Metodo para configuração dos Services (Serviços), tudo que tivermos de configuraçãode Services, iremos colocar aqui
+    public void ConfigureServices(IServiceCollection services)
+    {
+        // Adicionando configuração do token jwt ao projeto
+        services.AddAuthentication(option =>
+        {
+            option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(option =>
+        {
+            option.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateLifetime = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._key)),
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+        });
+
+        services.AddAuthorization();
+
+        // injetando serviço AdministradorServico
+        services.AddScoped<IAdministradorServico, AdministradorServico>();
+        // injetando serviço de veículos
+        services.AddScoped<IVeiculoServico, VeiculoServico>();
+
+        // configuração do swagger
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen(options =>
+        {
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                Description = "Insira o seu token aqui: "
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme{
+                        Reference = new OpenApiReference{
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[]{}
+                }
+            });
+        });
+
+        // acrescentando serviço do mysql
+        var dbServer = Environment.GetEnvironmentVariable("DB_SERVER");
+        var dbDatabase = Environment.GetEnvironmentVariable("DB_DATABASE");
+        var dbUser = Environment.GetEnvironmentVariable("DB_USER");
+        var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
+
+        var stringConexaoDB = $"Server={dbServer};Database={dbDatabase};Uid={dbUser};Pwd={dbPassword};";
+
+        Console.WriteLine($"--> String de conexão usada: {stringConexaoDB}");
+
+        services.AddDbContext<DbContexto>(options =>
+        {
+            options.UseMySql(
+                stringConexaoDB,
+                ServerVersion.AutoDetect(stringConexaoDB)
+            );
+
+        });
+
+
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        // instanciando o swagger
+        app.UseSwagger();
+        app.UseSwaggerUI(); // instanciando a interface do swagger ui
+
+        app.UseRouting();
+
+        // Configurando para usar autenticação e autorização jwt
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.UseEndpoints(endpoints =>
+        {
+            #region Home
+            endpoints.MapGet("/", () => Results.Json(new Home())).AllowAnonymous().WithTags("Home");
+            #endregion
+
+            #region Administradores
+            string GerarToken(Administrador administrador)
+            {
+                if (string.IsNullOrEmpty(this._key)) return string.Empty;
+
+                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._key));
+                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+                var claims = new List<Claim>()
+                {
+                    new Claim("Email", administrador.Email),
+                    new Claim("Perfil", administrador.Perfil),
+                    new Claim(ClaimTypes.Role, administrador.Perfil)
+                };
+
+                var token = new JwtSecurityToken(
+                    claims: claims,
+                    expires: DateTime.Now.AddDays(1),
+                    signingCredentials: credentials
+                );
+
+                return new JwtSecurityTokenHandler().WriteToken(token);
+            }
+
+            endpoints.MapPost("/administradores/login", ([FromBody] LoginDTO loginDTO, IAdministradorServico administradorServico) =>
+            {
+                var adm = administradorServico.Login(loginDTO);
+
+                if (adm != null)
+                {
+                    string token = GerarToken(adm);
+
+                    return Results.Ok(new AdministradorLogado
+                    {
+                        Email = adm.Email,
+                        Perfil = adm.Perfil,
+                        Token = token
+                    });
+                }
+                /* 
+                if (administradorServico.Login(loginDTO) != null)
+                {
+                    return Results.Ok("Login com sucesso!");
+                }
+                */
+                else
+                {
+                    return Results.Unauthorized();
+                }
+                // if (loginDTO.Email == "adm@teste.com" && loginDTO.Senha == "123456")
+                // {
+                //     return Results.Ok("Login com sucesso!");
+                // }
+                // else
+                // {
+                //     return Results.Unauthorized();
+                // }
+            }).AllowAnonymous().WithTags("Administradores");
+
+
+            endpoints.MapGet("/administradores", ([FromQuery] int? pagina, IAdministradorServico administradorServico) =>
+            {
+                var adms = new List<AdministradorModelView>();
+                var administradores = administradorServico.Todos(pagina);
+
+                foreach (var adm in administradores)
+                {
+
+                    adms.Add(new AdministradorModelView
+                    {
+                        Id = adm.Id,
+                        Email = adm.Email,
+                        Perfil = adm.Perfil
+
+                    });
+                }
+
+                return Results.Ok(adms);
+            })
+            .RequireAuthorization()
+            .RequireAuthorization(new AuthorizeAttribute { Roles = "Adm" })
+            .WithTags("Administradores");
+
+            endpoints.MapGet("/administradores/{id}", ([FromRoute] int id, IAdministradorServico administradorServico) =>
+            {
+                var administrador = administradorServico.BuscarPorId(id);
+
+                if (administrador == null) return Results.NotFound();
+
+                return Results.Ok(new AdministradorModelView
+                {
+                    Id = administrador.Id,
+                    Email = administrador.Email,
+                    Perfil = administrador.Perfil
+
+                });
+            })
+            .RequireAuthorization()
+            .RequireAuthorization(new AuthorizeAttribute { Roles = "Adm" })
+            .WithTags("Administradores");
+
+
+            endpoints.MapPost("/administradores", ([FromBody] AdministradorDTO administradorDTO, IAdministradorServico administradorServico) =>
+            {
+                var validacao = new ErrosDeValidacao
+                {
+                    Mensagens = new List<string>()
+                };
+
+                if (string.IsNullOrEmpty(administradorDTO.Email))
+                    validacao.Mensagens.Add("Email não pode ser vazio!");
+                if (string.IsNullOrEmpty(administradorDTO.Senha))
+                    validacao.Mensagens.Add("Senha não pode ser vazia!");
+                if (administradorDTO.Perfil == null)
+                    validacao.Mensagens.Add("Perfil não pode ser vazio!");
+
+                if (validacao.Mensagens.Count > 0)
+                    return Results.BadRequest(validacao);
+
+                var administrador = new Administrador
+                {
+                    Email = administradorDTO.Email,
+                    Senha = administradorDTO.Senha,
+                    Perfil = administradorDTO.Perfil.ToString() ?? Perfil.Editor.ToString()
+                };
+
+                administradorServico.Incluir(administrador);
+
+                return Results.Created($"administrador/{administrador.Id}", new AdministradorModelView
+                {
+                    Id = administrador.Id,
+                    Email = administrador.Email,
+                    Perfil = administrador.Perfil
+                });
+
+            })
+            .RequireAuthorization()
+            .RequireAuthorization(new AuthorizeAttribute { Roles = "Adm" })
+            .WithTags("Administradores");
+
+            #endregion
+
+            #region Veiculos
+            // Método de validar dto veículos 
+            ErrosDeValidacao ValidaDTO(VeiculoDTO veiculoDTO)
+            {
+                ErrosDeValidacao validacao = new ErrosDeValidacao
+                {
+                    Mensagens = new List<string>()
+                };
+
+                if (string.IsNullOrEmpty(veiculoDTO.Nome))
+                    validacao.Mensagens.Add("Nome de veículo não pode ser em branco!");
+                if (string.IsNullOrEmpty(veiculoDTO.Marca))
+                    validacao.Mensagens.Add("Marca de veículo não pode ser em branco!");
+                if (veiculoDTO.Ano < 1950)
+                {
+                    validacao.Mensagens.Add("Ano inválido! Informe um ano de veículo igual ou superior a 1950.");
+                }
+                ;
+
+                return validacao;
+            }
+
+            endpoints.MapPost("/veiculos", ([FromBody] VeiculoDTO veiculoDTO, IVeiculoServico veiculoServico) =>
+            {
+                var validacao = ValidaDTO(veiculoDTO);
+
+                if (validacao.Mensagens.Count > 0)
+                {
+                    return Results.BadRequest(validacao);
+                }
+
+                var veiculo = new Veiculo
+                {
+                    Nome = veiculoDTO.Nome,
+                    Marca = veiculoDTO.Marca,
+                    Ano = veiculoDTO.Ano
+                };
+
+                veiculoServico.Incluir(veiculo);
+
+                return Results.Created($"/veiculo/{veiculo.Id}", veiculo);
+            })
+            .RequireAuthorization()
+            .RequireAuthorization(new AuthorizeAttribute { Roles = "Adm,Editor", })
+            .WithTags("Veiculos");
+
+            endpoints.MapGet("/veiculos", ([FromQuery] int? pagina, IVeiculoServico veiculoServico) =>
+            {
+                var veiculos = veiculoServico.Todos(pagina);
+                return Results.Ok(veiculos);
+            })
+            .RequireAuthorization()
+            .RequireAuthorization(new AuthorizeAttribute { Roles = "Adm,Editor", })
+            .WithTags("Veiculos");
+
+            endpoints.MapGet("/veiculos/{id}", ([FromRoute] int id, IVeiculoServico veiculoServico) =>
+            {
+                var veiculo = veiculoServico.BuscarPorId(id);
+
+                if (veiculo == null) return Results.NotFound();
+                return Results.Ok(veiculo);
+
+            })
+            .RequireAuthorization()
+            .RequireAuthorization(new AuthorizeAttribute { Roles = "Adm,Editor", })
+            .WithTags("Veiculos");
+
+            endpoints.MapPut("veiculos/{id}", ([FromRoute] int id, VeiculoDTO veiculoDTO, IVeiculoServico veiculoServico) =>
+            {
+                var veiculo = veiculoServico.BuscarPorId(id);
+                if (veiculo == null) return Results.NotFound();
+
+                var validacao = ValidaDTO(veiculoDTO);
+                if (validacao.Mensagens.Count > 0)
+                {
+                    Results.BadRequest(validacao);
+                }
+
+
+                veiculo.Nome = veiculoDTO.Nome;
+                veiculo.Marca = veiculoDTO.Marca;
+                veiculo.Ano = veiculoDTO.Ano;
+
+                veiculoServico.Atualizar(veiculo);
+
+                return Results.Ok(veiculo);
+            }).RequireAuthorization()
+            .RequireAuthorization(new AuthorizeAttribute { Roles = "Adm", })
+            .WithTags("Veiculos");
+
+            endpoints.MapDelete("veiculos/{id}", ([FromRoute] int id, IVeiculoServico veiculoServico) =>
+            {
+                var veiculo = veiculoServico.BuscarPorId(id);
+
+                if (veiculo == null) return Results.NotFound();
+
+                veiculoServico.Apagar(veiculo);
+
+                return Results.NoContent();
+            })
+            .RequireAuthorization()
+            .RequireAuthorization(new AuthorizeAttribute { Roles = "Adm", })
+            .WithTags("Veiculos");
+
+            #endregion
+
+        });
+    }
+
+}
+
+```
+
+* Apos isso, iremos até a raiz de Test, e criaremos uma pasta Helpers, com a classe __Setup.cs__ (toda vez que for precisar configurar o serviço irá rodar nessa classe de Setup), e a pasta Request, com a classe __AdministradorRequestTest__. Segue abaixo conteúdo das mesmas:
+
+-> __Helpers/Setup.cs:__
+
+```
+
+```
+
+-> __Requests/AdministradorRequestTest.cs:__
+
+```
+
+```
+
+* Após isso, criaremos uma pasta chamada __Mock__ e dentro criaremos a nossa classe __AdministradorServicoMock.cs__
+
+## Utilizando "User Secrets"
+* Podemos lidar com segredos(senhas, chaves de API, string de conexão) no ambiente APS.NET usando "User Secrets" (Segredos do usuário).
+* __User Secrets__ É um arquivo secrets.json que fica armazenado fora da nossa pasta de projeto, em um local segudo do nosso hd.
+* Para utilizar é muito simples, na raiz do projeto, no nosso caso em __Api__, rodaremos o comando:
+```
+dotnet user-secrets init
+
+```
+* Agora é so adicionar nossas string de conexão e chave jwt aos segredos:
+
+```
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Database=minimal_api;Uid=root;Pwd=Carros14"
+dotnet user-secrets set "Jwt": "minimal-api-alunos-vamos-la_turma"
+```
+
+## Testando Classes Específicas
+* Podemos testar classes específicas com .NET, utilizando o comando no terminal:
+```
+```
+dotnet test --filter ClassName=NomePasta.NomeClasse
+
+```
+```
+-> __exemplo__
+```
+dotnet test --filter ClassName=Test.AdministradorRequestTest
+
+```
