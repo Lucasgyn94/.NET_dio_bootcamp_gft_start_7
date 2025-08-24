@@ -1595,13 +1595,177 @@ dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;
 dotnet user-secrets set "Jwt": "minimal-api-alunos-vamos-la_turma"
 ```
 
+## Configuração BCrypt.Net
+* Adicionado BCrypt.Net ao projeto para fazer o hashing das senhas de forma correta e segura.
+* Podemos fazer isso em 3 passos simples:
+   1. Instalar o pacote do BCrypt.Net
+   2. Ajustar o __AdministradorServico__ para criar o hash ao salvar um novo administrador e para verificar o hash durante o login
+   3. Atualizar o "seed" do banco de dados com a senha já em formato hash, para que o nosso usuário administrador inicial continue funcionando. 
+   
+* Podemos instalar o BCrypt com o comando:
+```
+dotnet add Api/MinimalApi.csproj package BCrypt.Net-Next
+```
+## Fazendo Deploy Da Aplicação
+1. Acessar o console aws
+
+2. Escolher a opção __EC2__
+
+3. Fazer um launch da instância clicando em __Launch Instance__ ou __Executar Instância__.
+
+4. Escolher um __Nome__, no nosso caso sera minimal-api
+
+5. Na escolha de imagens do sistema operacional, iremos escolher __Ubuntu__ na versão 22.04
+
+6. Tipo de Instância, iremos escolher uma com no mínimo 2gb ram
+
+7. Criar um novo par de chaves (login), no nosso caso será criado um chamado __minimalapi__. A chave será do tipo RSA e formato .pem para uso com OpenSSH.
+
+8. Clicar em __Executar Instância__ para criação da máquina.
+
+9. Esperar a criação da instância.
+
+10. Executar o comando a seguir para liberar permissões para o arquivo .pem:
+```
+chmod 400 minimalapi.pem
+```
+
+11. Conectar a instância via ssh utilizando o comando a seguir:
+```
+ssh -i /caminho/para/sua-chave.pem ubuntu@[IP_PUBLICO_DA_SUA_INSTANCIA]
+```
+no meu caso ficará:
+```
+ssh -i minimalapi.pem ubuntu@52.15.129.235
+```
+12. Agora conectada a máquina, executar o comando a seguir para conceder ao nosso usuário as permissões de administrador.
+```
+sudo su -
+```
+
+13. Atualizar a lista de pacotes e de versões disponíveis nos repositórios com o comando:
+```
+apt update
+```
+
+14. Executar o comando a seguir para baixar e instalar as atualizações de todos os pacotes já instalados no sistema, usando a lista atualizada pelo update.
+```
+apt upgrade
+```
+
+15. Instalar o .NET 8.0 na máquina instanciada, podemos fazer isso executando os comandos a seguir:
+
+```
+# Baixa e instala o pacote de repositório da Microsoft
+wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+rm packages-microsoft-prod.deb
+
+# Instala o .NET SDK
+sudo apt-get update
+sudo apt-get install -y dotnet-sdk-8.0
+```
+
+16. Instalar o mysql, podemos fazer isso com o comando:
+```
+apt install mysql-server
+```
+
+17. Conectar-se ao mysql:
+```
+mysql -u root -p
+```
+
+18. Vai pedir a senha que foi configurada na instalação do mysql, que por padrão e nenhuma, então só apertar <ENTERl>.
+
+19. Alterar a native password
+```
+ALTER USER 'root'@'localhost' IDENTIFIED WITH 'mysql_native_password' BY 'root';
+```
+
+20. Adicionar a chave do item no github, para isso, na máquina instanciada, digite:
+```
+ssh-keygen
+```
+* Em seguida e só dar <ENTER> nas opções.
+
+* A chave pública estará disponível no caminho como no exemplo a seguir:
+```
+Your public key has been saved in /root/.ssh/id_rsa.pub
+
+```
+
+21. Fazer um cat da chave pública no caminho instalado para colocar no github:
+```
+root@ip-172-31-45-89:~# cat /root/.ssh/id_rsa.pub 
+ssh-rsa CHAVEPUBLICA##############
+
+```
+
+22. Com a chave pública em mãos ir até o github e acessar > painel usuário > settings > SSH and GPG keys > New SSH Key.
+* Em Title, colocar o nome para a chave ssh, exemplo:
+```
+Servidor Minimal Api
+```
+* E em key, colocar a chave pública copiada
+
+* Com isso, teremos permissão em nossa instância para fazer o clone do projeto.
+
+23. Baixar a nossa aplicação de API para a instância.
+* Pegar o caminho HTTPS da api no github
+```
+https://github.com/Lucasgyn94/minimal-api.git
+  
+```
+* Com o caminho do git em mãos, fazer o clone da aplicação na instância:
+```
+git clone https://github.com/Lucasgyn94/minimal-api.git
+```
+
+24. Após baixar o projeto, em nossa intância entrar na pasta __API__, e fazer um build do projeto:
+```
+dotnet build
+```
+
+25. Instalar e configurar um servidor HTTP na frente, e no nosso caso será o Nginx (Proxy Reverso). Para isso, dentro na máquina instanciada, ir até a raiz da pasta __API__ e rodar o comando:
+```
+apt install nginx
+```
+
+26. Verificar se a instalação foi bem-sucedida
+```
+curl localhost
+```
+
+27. Ir até o site da aws, e liberar a porta, para isso iremos até Instâncias > minha máquiana > Segurança > Grupos de segurança > Editar regras de entrada.
+
+28. Em "Editar regras de entrada", clicar em **Adicionar regra** para adicionar o protocolo HTTP para que possamos fazer deploy e acessar nossa aplicação via HTTP.
+
+* Em Tipo, colocar __HTTP__, e em Origem __Qualquer local-ipv4__, clicar em "Salvar regras"
+
+* Agora a máquina já tem acesso ao HTTP, podemos vericar digitando a url a seguir no navegador:
+```
+http://ip_da_instancia
+```
+-> exemplo:
+```
+http://52.15.129.235
+```
+
+* Se tudo ocorreu bem, veremos a interface do nginx
+
+29. Agora voltaremos a nossa máquina instanciada, e mecheremos em nosso nginx, para fazer uma estratégia de __proxy-pass__.
+
+__PAREI EM 12 MINUTOS DA AULA DE DEPLOY__
+
+
+
+
 ## Testando Classes Específicas
 * Podemos testar classes específicas com .NET, utilizando o comando no terminal:
 ```
-```
 dotnet test --filter ClassName=NomePasta.NomeClasse
 
-```
 ```
 -> __exemplo__
 ```
