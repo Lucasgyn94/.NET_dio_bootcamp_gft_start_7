@@ -1636,7 +1636,7 @@ ssh -i /caminho/para/sua-chave.pem ubuntu@[IP_PUBLICO_DA_SUA_INSTANCIA]
 ```
 no meu caso ficará:
 ```
-ssh -i minimalapi.pem ubuntu@52.15.129.235
+ssh -i minimalapi.pem ubuntu@52.15.129.235 -o ServerAliveInterval=60
 ```
 12. Agora conectada a máquina, executar o comando a seguir para conceder ao nosso usuário as permissões de administrador.
 ```
@@ -1756,9 +1756,99 @@ http://52.15.129.235
 
 29. Agora voltaremos a nossa máquina instanciada, e mecheremos em nosso nginx, para fazer uma estratégia de __proxy-pass__.
 
-__PAREI EM 12 MINUTOS DA AULA DE DEPLOY__
+30. Para começar com noso __proxy-pass__, digitaremos no cmd da máquina aws instanciada:
+```
+vim /etc/nginx/sites-available/default
+```
+31. Fazer uma limpeza no arquivo para que o mesmo fique da seguinte forma:
+```
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
 
 
+        server_name _;
+
+        location / {
+        }
+
+}
+
+```
+
+32. Iremos até a parte de location e colocar uma estratégia de __proxy-pass__, deixando o mesmo seguinte forma:
+```
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+
+        server_name _;
+
+        location / {
+                proxy_pass http://localhost:5001
+
+        }
+
+}
+
+```
+
+* Com isso, a nossa aplicação será lançada na porta 5001
+
+33. Agora iremos reestartar o nosso nginx para que as alterações tenha efeito, podemos fazer isso com o comando:
+```
+systemctl restart nginx
+```
+
+__OBS:__ As vezes pode ser necessário configurar o cors na aplicação.
+
+34. Fazer o build do projeto para gerar a aplicação desse meu código, assim, o mesmo irá rodar em ambiente de produção. Podemos fazer isso indo até a pasta "API" do projeto na instância aws, e dentro dessa pasta, rodar o comando:
+
+```
+dotnet build
+```
+
+35. Após o build, teremos o caminho do qual iremos startar a nossa aplicação através do modo de produção, no meu caso o caminho é:
+```
+/root/minimal-api/Api/bin/Debug/net8.0/MinimalApi.dll
+```
+
+36. Com isso, iremos startar a nossa aplicação com o comando:
+
+```
+dotnet /root/minimal-api/Api/bin/Debug/net8.0/MinimalApi.dll
+```
+
+37. Como a aplicação subiu na porta 5000, será necessário voltar ao arquivo __"/etc/nginx/sites-available/default"__ e modificar para que a porta seja 5000 também.
+
+38. Restartar o serviço do nginx novamente:
+```
+systemctl restart nginx
+```
+
+39. Criar o banco de dados com ef:
+```
+dotnet ef database update
+```
+__OBS__: Como o ef provavelmente não vai está instalado na instância aws, será necessário instalá-lo:
+```
+dotnet tool install --global dotnet-ef -- version 8.0.0
+```
+
+40. Fazer o build e aplicar as migrations no banco de dados:
+```
+dotnet ef database update
+```
+
+41. Startar a aplicação rodando em modo background:
+```
+nohup dotnet /home/ubuntu/minimal-api/Api/bin/Debug/net8.0/MinimalApi.dll < /dev/null &
+```
+* Para vermos o log podemos executar o comando:
+```
+tail -f nohup.out
+```
 
 
 ## Testando Classes Específicas
