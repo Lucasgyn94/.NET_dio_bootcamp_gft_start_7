@@ -19,3 +19,6 @@
 [submodule "6_introducao_a_cloud_com_azure/04_desafio_de_projeto_criando_maquinas_virtuais_na_azure"]
 	path = 6_introducao_a_cloud_com_azure/04_desafio_de_projeto_criando_maquinas_virtuais_na_azure
 	url = https://github.com/Lucasgyn94/resumo-desafio-criando-maquinas-virtuais-na-azure.git
+[submodule "6_introducao_a_cloud_com_azure/06_desafio_de_projeto_configurando_uma_instancia_de_banco_de_dados_na_azure"]
+	path = 6_introducao_a_cloud_com_azure/06_desafio_de_projeto_configurando_uma_instancia_de_banco_de_dados_na_azure
+	url = https://github.com/Lucasgyn94/resumo-lab-configurando-instancia-banco-de-dados-azure.git
