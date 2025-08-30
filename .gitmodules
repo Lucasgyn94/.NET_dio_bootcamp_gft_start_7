@@ -16,3 +16,6 @@
 [submodule "6_introducao_a_cloud_com_azure/02_desafio_de_projeto_microsoft_azure_localizando_servicos_por_categoria"]
 	path = 6_introducao_a_cloud_com_azure/02_desafio_de_projeto_microsoft_azure_localizando_servicos_por_categoria
 	url = https://github.com/Lucasgyn94/resumo-lab-azure-localizando-servicos.git
+[submodule "6_introducao_a_cloud_com_azure/04_desafio_de_projeto_criando_maquinas_virtuais_na_azure"]
+	path = 6_introducao_a_cloud_com_azure/04_desafio_de_projeto_criando_maquinas_virtuais_na_azure
+	url = https://github.com/Lucasgyn94/resumo-desafio-criando-maquinas-virtuais-na-azure.git
