@@ -13,3 +13,6 @@
 [submodule "4_desenvolvimento_de_apis/02_desafio_de_projeto_trabalhando_com_asp_net_minimals_apis/MinimalApi"]
 	path = 4_desenvolvimento_de_apis/02_desafio_de_projeto_trabalhando_com_asp_net_minimals_apis/MinimalApi
 	url = https://github.com/Lucasgyn94/minimal-api.git
+[submodule "6_introducao_a_cloud_com_azure/02_desafio_de_projeto_microsoft_azure_localizando_servicos_por_categoria"]
+	path = 6_introducao_a_cloud_com_azure/02_desafio_de_projeto_microsoft_azure_localizando_servicos_por_categoria
+	url = https://github.com/Lucasgyn94/resumo-lab-azure-localizando-servicos.git
