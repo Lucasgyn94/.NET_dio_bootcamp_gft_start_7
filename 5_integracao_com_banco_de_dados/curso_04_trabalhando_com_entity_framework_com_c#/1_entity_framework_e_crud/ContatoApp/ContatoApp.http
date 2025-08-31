@@ -1,6 +1,0 @@
-@ContatoApp_HostAddress = http://localhost:5159
-
-GET {{ContatoApp_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

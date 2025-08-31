@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+// configuração da conexão com banco de dados
+var stringDeConexao = builder.Configuration.GetConnectionString("ConexaoPadrao");
 builder.Services.AddDbContext<AgendaContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoPadrao"));
+    options.UseMySql(stringDeConexao, ServerVersion.AutoDetect(stringDeConexao));
 });
 
 builder.Services.AddEndpointsApiExplorer();
