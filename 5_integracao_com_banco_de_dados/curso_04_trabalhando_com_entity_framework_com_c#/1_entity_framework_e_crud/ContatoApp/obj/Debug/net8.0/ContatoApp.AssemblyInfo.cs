@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ContatoApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4f48e23c1311414a98561e620f507b1cd5fdb1d0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4e8e0eee5a381cbacbc67956795d00171333a014")]
 [assembly: System.Reflection.AssemblyProductAttribute("ContatoApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ContatoApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
