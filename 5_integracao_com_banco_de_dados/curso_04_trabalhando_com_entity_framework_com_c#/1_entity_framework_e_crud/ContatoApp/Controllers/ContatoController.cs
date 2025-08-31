@@ -22,4 +22,17 @@ public class ContatoController : ControllerBase
         return Ok(contato);
     }
 
+    [HttpGet("{id}")]
+    public IActionResult ObterPorId(int id)
+    {
+        var contato = this._context.Contatos.Find(id);
+
+        if (contato == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(contato);
+    }
+
 }
