@@ -22,3 +22,6 @@
 [submodule "6_introducao_a_cloud_com_azure/06_desafio_de_projeto_configurando_uma_instancia_de_banco_de_dados_na_azure"]
 	path = 6_introducao_a_cloud_com_azure/06_desafio_de_projeto_configurando_uma_instancia_de_banco_de_dados_na_azure
 	url = https://github.com/Lucasgyn94/resumo-lab-configurando-instancia-banco-de-dados-azure.git
+[submodule "5_integracao_com_banco_de_dados/curso_05_desafio_construindo_um_sistema_de_agendamento_de_tarefas_com_ef/trilha-net-api-desafio-sistema-agendamento-tarefas"]
+	path = 5_integracao_com_banco_de_dados/curso_05_desafio_construindo_um_sistema_de_agendamento_de_tarefas_com_ef/trilha-net-api-desafio-sistema-agendamento-tarefas
+	url = https://github.com/Lucasgyn94/trilha-net-api-desafio-sistema-agendamento-tarefas.git
