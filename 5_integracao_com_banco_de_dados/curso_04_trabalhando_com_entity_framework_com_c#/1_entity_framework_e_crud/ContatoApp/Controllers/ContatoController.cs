@@ -19,7 +19,9 @@ public class ContatoController : ControllerBase
     {
         this._context.Add(contato);
         this._context.SaveChanges();
-        return Ok(contato);
+        //return Ok(contato);
+        return CreatedAtAction(nameof(ObterTodos), new { id = contato.Id }, contato);
+        
     }
 
     [HttpGet]
