@@ -49,6 +49,13 @@ public class ContatoController : ControllerBase
         return Ok(contato);
     }
 
+    [HttpGet("ObterPorNome")]
+    public IActionResult ObterPorNome(string nome)
+    {
+        var contato = this._context.Contatos.Where(c => c.Nome.Contains(nome));
+        return Ok(contato);
+    }
+
     [HttpPut("{id}")]
     public IActionResult Atualizar(int id, Contato contato)
     {
