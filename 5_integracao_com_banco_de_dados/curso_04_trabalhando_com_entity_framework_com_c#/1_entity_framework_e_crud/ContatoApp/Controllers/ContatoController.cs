@@ -70,4 +70,20 @@ public class ContatoController : ControllerBase
         return Ok(contatoBanco);
     }
 
+    [HttpDelete("{id}")]
+    public IActionResult Deletar(int id)
+    {
+        var contatoBanco = this._context.Contatos.Find(id);
+
+        if (contatoBanco == null)
+        {
+            return NotFound();
+        }
+
+        this._context.Contatos.Remove(contatoBanco);
+        this._context.SaveChanges();
+
+        return NoContent();
+        
+    }
 }
